@@ -4,7 +4,13 @@ This project is a web-based application for generating images using various AI m
 
 ## What I've Done So Far
 
-I've implemented the core HTML structure and comprehensive CSS styling. The application features a form-based interface where users can enter text prompts, choose from multiple AI models, specify image count and dimensions, and generate images. The UI includes a gallery grid for displaying results, download buttons for each image, and a theme toggle for dark/light modes. JavaScript integration is planned for handling API calls and dynamic functionality.
+I've implemented the core HTML structure and comprehensive CSS styling. The application features a form-based interface where users can enter text prompts, choose from multiple AI models, specify image count and dimensions, and generate images. The UI includes a gallery grid for displaying results, download buttons for each image, and a theme toggle for dark/light modes. ## Getting Started
+
+To run this application locally:
+
+1. Clone or download the project files to your local machine.
+2. Open `index.html` in any modern web browser.
+3. The interface will load, allowing you to toggle between light and dark themes. Note that image generation functionality is not yet implemented and requires backend API integration.
 
 ## Features
 
@@ -21,7 +27,7 @@ I've implemented the core HTML structure and comprehensive CSS styling. The appl
 
 - **HTML5**: Semantic markup for structure and accessibility
 - **CSS3**: Custom properties for theming, CSS Grid for layout, Flexbox for alignment, and responsive design with media queries
-- **JavaScript**: Vanilla JS for future DOM manipulation and API integration
+- **JavaScript**: Vanilla JS for DOM manipulation, theme management with localStorage, and future API integration
 - **Font Awesome**: Icon library for UI elements
 - **Google Fonts**: Poppins font family for typography
 
