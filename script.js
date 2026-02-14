@@ -7,9 +7,12 @@ const modelSelect = document.getElementById("model-select");
 const countSelect = document.getElementById("count-select");
 const ratioSelect = document.getElementById("ratio-select");
 const gridGallery = document.querySelector(".gallery-grid");
+const lightbox = document.querySelector(".lightbox");
+const lightboxImg = lightbox.querySelector(".lightbox-img");
+const lightboxCloseBtn = lightbox.querySelector(".close-btn");
 
 // Hugging Face API KEY here
-const API_KEY = "HUGGING_FACE_API_HERE!";
+const API_KEY = "HUGGING_FACE_CODE_HERE!";
 
 const examplePrompts = [
   "A magic forest with glowing plants and fairy homes among giant mushrooms",
@@ -53,7 +56,7 @@ const toggleTheme = () => {
     : "fa-solid fa-moon";
 };
 
-const getImageDimensions = (aspectRatio, baseSize = 512) => {
+const getImageDimensions = (aspectRatio, baseSize = 1024) => {
   const [width, height] = aspectRatio.split("/").map(Number);
   const scaleFactor = baseSize / Math.sqrt(width * height);
 
@@ -67,13 +70,24 @@ const getImageDimensions = (aspectRatio, baseSize = 512) => {
   return { width: calculatedWidth, height: calculatedHeight };
 };
 
+const toggleLightbox = (imgUrl) => {
+  if (imgUrl) {
+    lightboxImg.src = imgUrl;
+    lightbox.classList.add("show");
+    document.body.style.overflow = "hidden";
+  } else {
+    lightbox.classList.remove("show");
+    document.body.style.overflow = "auto";
+  }
+};
+
 // Replace Loading Spinner -------> Actual Image
 const updateImageCard = (imgIndex, imgUrl) => {
   const imgCard = document.getElementById(`img-card-${imgIndex}`);
   if (!imgCard) return;
 
   imgCard.classList.remove("loading");
-  imgCard.innerHTML = `<img src="${imgUrl}" class="result-img" />
+  imgCard.innerHTML = `<img src="${imgUrl}" class="result-img" onclick="toggleLightbox('${imgUrl}')" />
               <div class="img-overlay">
                 <a href="${imgUrl}" class="img-download-btn" download="${Date.now()}.png">
                   <i class="fa-solid fa-download"></i>
@@ -183,3 +197,7 @@ promptBtn.addEventListener("click", () => {
 
 promptForm.addEventListener("submit", handleFormSubmit);
 themeToggle.addEventListener("click", toggleTheme);
+lightboxCloseBtn.addEventListener("click", () => toggleLightbox());
+lightbox.addEventListener("click", (e) => {
+  if (e.target === lightbox) toggleLightbox();
+});
