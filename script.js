@@ -2,13 +2,14 @@ const themeToggle = document.querySelector(".theme-toggle");
 const promptInput = document.querySelector(".prompt-input");
 const promptForm = document.querySelector(".prompt-form");
 const promptBtn = document.querySelector(".prompt-btn");
+const generateBtn = document.querySelector(".generate-btn");
 const modelSelect = document.getElementById("model-select");
 const countSelect = document.getElementById("count-select");
 const ratioSelect = document.getElementById("ratio-select");
 const gridGallery = document.querySelector(".gallery-grid");
 
 // Hugging Face API KEY here
-const API_KEY = "YOUR_API";
+const API_KEY = "HUGGING_FACE_API_HERE!";
 
 const examplePrompts = [
   "A magic forest with glowing plants and fairy homes among giant mushrooms",
@@ -66,6 +67,20 @@ const getImageDimensions = (aspectRatio, baseSize = 512) => {
   return { width: calculatedWidth, height: calculatedHeight };
 };
 
+// Replace Loading Spinner -------> Actual Image
+const updateImageCard = (imgIndex, imgUrl) => {
+  const imgCard = document.getElementById(`img-card-${imgIndex}`);
+  if (!imgCard) return;
+
+  imgCard.classList.remove("loading");
+  imgCard.innerHTML = `<img src="${imgUrl}" class="result-img" />
+              <div class="img-overlay">
+                <a href="${imgUrl}" class="img-download-btn" download="${Date.now()}.png">
+                  <i class="fa-solid fa-download"></i>
+                </a>
+              </div>`;
+};
+
 // Req -------> HugFace
 const generateImages = async (
   selectedModel,
@@ -73,8 +88,10 @@ const generateImages = async (
   aspectRatio,
   promptText,
 ) => {
-  const MODEL_URL = `https://api-inference.huggingface.co/models/${selectedModel}`;
+  const MODEL_URL = `https://router.huggingface.co/hf-inference/models/${selectedModel}`;
   const { width, height } = getImageDimensions(aspectRatio);
+
+  generateBtn.setAttribute("disabled", "true");
 
   // Array of Image Generation
   const imagePromises = Array.from({ length: imageCount }, async (_, i) => {
@@ -94,16 +111,33 @@ const generateImages = async (
         }),
       });
 
-      if (!response.ok) throw new Error((await response.json())?.error);
+      if (!response.ok) {
+        const contentType = response.headers.get("content-type");
+        let errorMessage = `HTTP Error: ${response.status}`;
 
+        if (contentType && contentType.includes("application/json")) {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorMessage;
+        } else {
+          errorMessage = await response.text();
+        }
+        throw new Error(errorMessage);
+      }
+
+      // Response Img -----------> Image URL------------> Update Image
       const result = await response.blob();
-      console.log(result);
-    } catch (e) {
-      console.error(e);
+      updateImageCard(i, URL.createObjectURL(result));
+    } catch (error) {
+      console.log(error);
+      const imgCard = document.getElementById(`img-card-${i}`);
+      imgCard.classList.replace("loading", "error");
+      imgCard.querySelector(".status-text").textContent =
+        "Image Generation Failed! Please Check CONSOLE for more deatils.";
     }
   });
 
   await Promise.allSettled(imagePromises);
+  generateBtn.removeAttribute("disabled");
 };
 
 // Placeholder Cards with Spinner
@@ -118,11 +152,8 @@ const createImageCards = (
     gridGallery.innerHTML += `<div class="img-card loading" id="img-card-${i}" style="aspect-ratio: ${aspectRatio}">
               <div class="status-container">
                 <div class="spinner"></div>
-                <i class="fa-solid fa-triangle-exclamation"></i>
-                <p class="status-text">Generating...</p>
-              </div>
-              <img src="test.png" class="result-img" />
-              <div class="img-overlay">
+                  <i class="fa-solid fa-triangle-exclamation"></i>
+                  <p class="status-text">Generating...</p>
               </div>
             </div>`;
   }

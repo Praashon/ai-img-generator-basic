@@ -4,13 +4,16 @@ This project is a web-based application for generating images using various AI m
 
 ## What I've Done So Far
 
-I've implemented the core HTML structure and comprehensive CSS styling. The application features a form-based interface where users can enter text prompts, choose from multiple AI models, specify image count and dimensions, and generate images. The UI includes a gallery grid for displaying results, download buttons for each image, and a theme toggle for dark/light modes. ## Getting Started
+I've implemented the core HTML structure, comprehensive CSS styling, and full JavaScript functionality for image generation using the Hugging Face Inference API. The application features a form-based interface where users can enter text prompts, choose from multiple AI models, specify image count and dimensions, and generate images. The UI includes a gallery grid for displaying results, download buttons for each image, and a theme toggle for dark/light modes.
+
+## Getting Started
 
 To run this application locally:
 
 1. Clone or download the project files to your local machine.
 2. Open `index.html` in any modern web browser.
-3. The interface will load, allowing you to toggle between light and dark themes. Note that image generation functionality is not yet implemented and requires backend API integration.
+3. Replace the placeholder `API_KEY` in `script.js` with your actual Hugging Face API key.
+4. The interface will load, allowing you to toggle between light and dark themes and generate images using the selected AI models.
 
 ## Features
 
@@ -22,12 +25,14 @@ To run this application locally:
 - **Download Functionality**: Individual download buttons for each generated image
 - **Theme Toggle**: Switch between light and dark themes with smooth transitions
 - **Responsive Design**: Mobile-friendly layout using CSS Grid and Flexbox
+- **Example Prompts**: Random prompt generator for inspiration
 
 ## Technology Stack
 
 - **HTML5**: Semantic markup for structure and accessibility
 - **CSS3**: Custom properties for theming, CSS Grid for layout, Flexbox for alignment, and responsive design with media queries
-- **JavaScript**: Vanilla JS for DOM manipulation, theme management with localStorage, and future API integration
+- **JavaScript**: Vanilla JS for DOM manipulation, theme management with localStorage, and Hugging Face API integration
+- **Hugging Face Inference API**: For AI-powered image generation
 - **Font Awesome**: Icon library for UI elements
 - **Google Fonts**: Poppins font family for typography
 

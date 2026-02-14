@@ -246,6 +246,11 @@ body.dark-theme .container {
   background: var(--color-gradient);
 }
 
+.prompt-actions .generate-btn:disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
 .prompt-actions .generate-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(217, 75, 40, 0.3);
@@ -314,6 +319,9 @@ body.dark-theme .container {
   height: 45px;
   width: 45px;
   color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: none;
   cursor: pointer;
   backdrop-filter: blur(5px);
