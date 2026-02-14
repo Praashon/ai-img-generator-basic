@@ -1,6 +1,11 @@
 const themeToggle = document.querySelector(".theme-toggle");
 const promptInput = document.querySelector(".prompt-input");
+const promptForm = document.querySelector(".prompt-form");
 const promptBtn = document.querySelector(".prompt-btn");
+const modelSelect = document.getElementById("model-select");
+const countSelect = document.getElementById("count-select");
+const ratioSelect = document.getElementById("ratio-select");
+const gridGallery = document.querySelector(".gallery-grid");
 
 const examplePrompts = [
   "A magic forest with glowing plants and fairy homes among giant mushrooms",
@@ -44,6 +49,41 @@ const toggleTheme = () => {
     : "fa-solid fa-moon";
 };
 
+// Placeholder Cards with Spinner
+const createImageCards = (
+  selectedModel,
+  imageCount,
+  aspectRatio,
+  promptText,
+) => {
+  gridGallery.innerHTML = "";
+  for (let i = 0; i < imageCount; i++) {
+    gridGallery.innerHTML += `<div class="img-card loading" id="img-card-${i}" style="aspect-ratio: ${aspectRatio}">
+              <div class="status-container">
+                <div class="spinner"></div>
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <p class="status-text">Generating...</p>
+              </div>
+              <img src="test.png" class="result-img" />
+              <div class="img-overlay">
+              </div>
+            </div>`;
+  }
+};
+
+// Handle Form Submission
+const handleFormSubmit = (e) => {
+  e.preventDefault();
+
+  // Getting Form Values
+  const selectedModel = modelSelect.value;
+  const imageCount = parseInt(countSelect.value) || 1;
+  const aspectRatio = ratioSelect.value || "1 / 1";
+  const promptText = promptInput.value.trim();
+
+  createImageCards(selectedModel, imageCount, aspectRatio, promptText);
+};
+
 promptBtn.addEventListener("click", () => {
   const prompt =
     examplePrompts[Math.floor(Math.random() * examplePrompts.length)];
@@ -51,4 +91,5 @@ promptBtn.addEventListener("click", () => {
   promptInput.focus();
 });
 
+promptForm.addEventListener("submit", handleFormSubmit);
 themeToggle.addEventListener("click", toggleTheme);
