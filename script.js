@@ -7,6 +7,9 @@ const countSelect = document.getElementById("count-select");
 const ratioSelect = document.getElementById("ratio-select");
 const gridGallery = document.querySelector(".gallery-grid");
 
+// Hugging Face API KEY here
+const API_KEY = "YOUR_API";
+
 const examplePrompts = [
   "A magic forest with glowing plants and fairy homes among giant mushrooms",
   "An old steampunk airship floating through golden clouds at sunset",
@@ -49,6 +52,60 @@ const toggleTheme = () => {
     : "fa-solid fa-moon";
 };
 
+const getImageDimensions = (aspectRatio, baseSize = 512) => {
+  const [width, height] = aspectRatio.split("/").map(Number);
+  const scaleFactor = baseSize / Math.sqrt(width * height);
+
+  let calculatedWidth = Math.round(width * scaleFactor);
+  let calculatedHeight = Math.round(height * scaleFactor);
+
+  // Dimensions are multiples of 16 (AI MODEL REQUIREMENT!)
+  calculatedWidth = Math.floor(calculatedWidth / 16) * 16;
+  calculatedHeight = Math.floor(calculatedHeight / 16) * 16;
+
+  return { width: calculatedWidth, height: calculatedHeight };
+};
+
+// Req -------> HugFace
+const generateImages = async (
+  selectedModel,
+  imageCount,
+  aspectRatio,
+  promptText,
+) => {
+  const MODEL_URL = `https://api-inference.huggingface.co/models/${selectedModel}`;
+  const { width, height } = getImageDimensions(aspectRatio);
+
+  // Array of Image Generation
+  const imagePromises = Array.from({ length: imageCount }, async (_, i) => {
+    // Req ---------> API MODEL
+    try {
+      const response = await fetch(MODEL_URL, {
+        headers: {
+          Authorization: `Bearer ${API_KEY}`,
+          "Content-Type": "application/json",
+          "x-use-cache": "false",
+        },
+        method: "POST",
+        body: JSON.stringify({
+          inputs: promptText,
+          parameters: { width, height },
+          options: { wait_for_model: true },
+        }),
+      });
+
+      if (!response.ok) throw new Error((await response.json())?.error);
+
+      const result = await response.blob();
+      console.log(result);
+    } catch (e) {
+      console.error(e);
+    }
+  });
+
+  await Promise.allSettled(imagePromises);
+};
+
 // Placeholder Cards with Spinner
 const createImageCards = (
   selectedModel,
@@ -69,6 +126,8 @@ const createImageCards = (
               </div>
             </div>`;
   }
+
+  generateImages(selectedModel, imageCount, aspectRatio, promptText);
 };
 
 // Handle Form Submission
